@@ -44,12 +44,10 @@ class MagicTag
 
   # Tag a single directory
   def self.tag_directory(directory, search_pattern)
-    mp3_files = []
-    Dir.entries(directory).each do |entry|
+    mp3_files = Dir.entries(directory).inject([]) do |entries, entry|
       entry = to_UTF8(entry)
-      if /.mp3\s*$/i.match(entry)
-        mp3_files << Mp3File.new(entry)
-      end
+      entries << Mp3File.new(entry) if /.mp3\s*$/i.match(entry)
+      entries
     end
 
     Services.match_album(mp3_files, search_pattern)
